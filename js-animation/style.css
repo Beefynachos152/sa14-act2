@@ -1,31 +1,32 @@
 body {
-    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
     margin: 0;
-    padding: 0;
 }
 
 .container {
+    position: relative;
+    width: 100%;
     max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    text-align: center;
 }
 
-#block {
-    width: 100px;
-    height: 100px;
+#movable-block {
+    width: 50px;
+    height: 50px;
     background-color: #007bff;
-    margin: 20px auto;
-    transition: transform 0.5s ease-in-out;
+    position: absolute;
+    left: 20px;
+    transition: left 0.5s ease;
 }
 
-button {
+#control-button {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     padding: 10px 20px;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
+    font-size: 16px;
     cursor: pointer;
 }

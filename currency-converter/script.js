@@ -1,28 +1,40 @@
-document.getElementById('currencyForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const sourceCurrency = document.getElementById('sourceCurrency').value;
-    const targetCurrency = document.getElementById('targetCurrency').value;
-    const amount = document.getElementById('amountInput').value;
+const apiUrl = 'https://api.exchangerate-api.com/v4/latest/';
 
-    convertCurrency(sourceCurrency, targetCurrency, amount);
+document.getElementById('converter-form').addEventListener('submit', async function (e) {
+    e.preventDefault(); 
+
+    const amountInput = document.getElementById('amount');
+    const sourceCurrencySelect = document.getElementById('source-currency');
+    const targetCurrencySelect = document.getElementById('target-currency');
+    const convertedAmountSpan = document.getElementById('converted-amount');
+    const exchangeRateSpan = document.getElementById('exchange-rate');
+
+    const amount = parseFloat(amountInput.value);
+    const sourceCurrency = sourceCurrencySelect.value;
+    const targetCurrency = targetCurrencySelect.value;
+
+    if (!amount || amount <= 0) {
+        alert('Please enter a valid amount.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${apiUrl}${sourceCurrency}`);
+        const data = await response.json();
+
+        if (!data.rates || !data.rates[targetCurrency]) {
+            alert('Failed to retrieve valid exchange rates.');
+            return;
+        }
+
+        const exchangeRate = data.rates[targetCurrency];
+        const convertedAmount = amount * exchangeRate;
+
+        convertedAmountSpan.textContent = `${convertedAmount.toFixed(2)} ${targetCurrency}`;
+        exchangeRateSpan.textContent = `1 ${sourceCurrency} = ${exchangeRate.toFixed(2)} ${targetCurrency}`;
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        alert('An error occurred. Please try again later.');
+    }
 });
-
-function convertCurrency(sourceCurrency, targetCurrency, amount) {
-    const apiKey = '48101e99a0-495abbfe34-scq3wt';
-    const apiUrl = `https://api.fastforex.io/convert?from=${sourceCurrency}&to=${targetCurrency}&amount=${amount}&api_key=${apiKey}`;
-
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            const convertedAmount = data.result;
-            displayResult(convertedAmount);
-        })
-        .catch(error => {
-            console.log('Error fetching exchange rates:', error);
-        });
-}
-
-function displayResult(convertedAmount) {
-    const resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = `Converted Amount: ${convertedAmount}`;
-}

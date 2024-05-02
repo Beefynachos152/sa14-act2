@@ -1,13 +1,25 @@
-const block = document.getElementById('block');
-const controlButton = document.getElementById('controlButton');
-let isMoved = false;
+document.addEventListener('DOMContentLoaded', () => {
+    const movableBlock = document.getElementById('movable-block');
+    const controlButton = document.getElementById('control-button');
+    let isMoving = false;
 
-controlButton.addEventListener('click', function() {
-    if (!isMoved) {
-        block.style.transform = 'translateX(300px)';
-        isMoved = true;
-    } else {
-        block.style.transform = 'translateX(0)';
-        isMoved = false;
-    }
+    const calculatePositions = () => {
+        const startLeftPosition = 20;
+        const endLeftPosition = window.innerWidth - movableBlock.clientWidth - 20;
+        return { startLeftPosition, endLeftPosition };
+    };
+
+    let { startLeftPosition, endLeftPosition } = calculatePositions();
+
+    window.addEventListener('resize', () => {
+        let positions = calculatePositions();
+        startLeftPosition = positions.startLeftPosition;
+        endLeftPosition = positions.endLeftPosition;
+        movableBlock.style.left = isMoving ? `${endLeftPosition}px` : `${startLeftPosition}px`;
+    });
+
+    controlButton.addEventListener('click', () => {
+        isMoving = !isMoving;
+        movableBlock.style.left = isMoving ? `${endLeftPosition}px` : `${startLeftPosition}px`;
+    });
 });
